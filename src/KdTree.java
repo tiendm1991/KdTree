@@ -1,5 +1,9 @@
+import java.util.Set;
+import java.util.TreeSet;
+
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
 	private static final boolean VERTICAL = true;
@@ -138,17 +142,53 @@ public class KdTree {
 	}
 
 	public void draw() { // draw all points to standard draw
-		Iterable<Point2D> setPoint = range(RECTHV_MAX);
-		for(Point2D point : setPoint) {
-			 point.draw();
-		 }
+		if(root == null){
+			return ;
+		}else {
+			draw(root, VERTICAL);
+		}
+	}
+	
+	public void draw(Node n, boolean orientation) {
+		if(orientation == VERTICAL){
+			StdDraw.setPenColor(StdDraw.RED);
+            StdDraw.line(n.p.x(), n.rect.ymin(), n.p.x(), n.rect.ymax());
+        } else {
+            StdDraw.setPenColor(StdDraw.BLUE);
+            StdDraw.line(n.rect.xmin(), n.p.y(), n.rect.xmax(), n.p.y());
+        }
+		if(n.lb != null){
+			draw(n.lb, !orientation);
+		}
+		if(n.rt != null){
+			draw(n.rt, !orientation);
+		}
 		
+        StdDraw.setPenColor(StdDraw.BLACK);
+        n.p.draw();
 	}
 
 	public Iterable<Point2D> range(RectHV rect) { // all points that are inside the rectangle (or on the boundary)
+		if(root == null){
+			return null;
+		}
+		Set<Point2D> setPoint = new TreeSet<>();
+		range(root, rect, setPoint);
+		return setPoint;
+	}
+
+	private void range(Node n, RectHV rect, Set<Point2D> setPoint) {
+		if(n == null) return;
+		if(rect.contains(n.p)) setPoint.add(n.p);
+		if(!n.rect.intersects(rect)){
+			return;
+		}
+		range(n.lb, rect, setPoint);
+		range(n.rt, rect, setPoint);
 	}
 
 	public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
+		
 	}
 
 	public static void main(String[] args) { // unit testing of the methods (optional)
