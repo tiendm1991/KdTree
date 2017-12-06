@@ -50,7 +50,7 @@ public class NearestNeighborVisualizer {
 
             // draw in red the nearest neighbor (using brute-force algorithm)
             StdDraw.setPenRadius(0.03);
-            StdDraw.setPenColor(StdDraw.RED);
+            StdDraw.setPenColor(StdDraw.ORANGE);
             brute.nearest(query).draw();
             StdDraw.setPenRadius(0.02);
 
