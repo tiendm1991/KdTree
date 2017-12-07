@@ -6,6 +6,7 @@ import edu.princeton.cs.algs4.RectHV;
 
 public class PointSET {
 	private TreeSet<Point2D> _setPoint;
+	private static final RectHV RECTHV_MAX = new RectHV(0.0, 0.0, 1.0, 1.0);
 	
 	public PointSET() { // construct an empty set of points
 		_setPoint = new TreeSet<>();
@@ -24,6 +25,7 @@ public class PointSET {
 		if(p == null){
 			throw new IllegalArgumentException("point is illegal");
 		}
+		if(!RECTHV_MAX.contains(p)) return;
 		_setPoint.add(p);
 	}
 
@@ -56,12 +58,12 @@ public class PointSET {
 		if(p == null){
 			throw new IllegalArgumentException("rect is illegal");
 		}
-		if(size() <= 1) return null;
+		if(isEmpty()) return null;
 		double min = 2.0;
 		Point2D pMin = null;
 		for(Iterator<Point2D> it = _setPoint.iterator(); it.hasNext();){
 			Point2D point = it.next();
-			if(p.distanceTo(point) < min && !p.equals(point)) {
+			if(p.distanceTo(point) < min) {
 				min = p.distanceTo(point);
 				pMin = point;
 			}

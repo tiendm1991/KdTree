@@ -7,7 +7,6 @@ import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
 	private static final boolean VERTICAL = true;
-	private static final boolean HORIZONTAL = false;
 	private static final RectHV RECTHV_MAX = new RectHV(0.0, 0.0, 1.0, 1.0);
 	private Node root;
 	private int size;
@@ -29,6 +28,7 @@ public class KdTree {
 		if(p == null){
 			throw new IllegalArgumentException("point is illegal");
 		}
+		if(!RECTHV_MAX.contains(p)) return;
 		if(root == null){
 			root = new Node(p, RECTHV_MAX);
 			size++;
@@ -36,9 +36,10 @@ public class KdTree {
 			Node current = root;
 			boolean orientation = VERTICAL;
 			while (true) {
+				if(p.equals(current.p)) return;
 				if(orientation == VERTICAL){
 					double compare = p.x() - current.p.x();
-					if(compare >= 0){
+					if(compare > 0){
 						if(current.rt == null){
 							Node add = new Node(p, new RectHV(current.p.x(), current.rect.ymin(), 
 																current.rect.xmax(), current.rect.ymax()));
@@ -63,7 +64,7 @@ public class KdTree {
 					}
 				}else {
 					double compare = p.y() - current.p.y();
-					if(compare >= 0){
+					if(compare > 0){
 						if(current.rt == null){
 							Node add = new Node(p, new RectHV(current.rect.xmin(), current.p.y(), 
 																current.rect.xmax(), current.rect.ymax()));
@@ -101,10 +102,10 @@ public class KdTree {
 			Node current = root;
 			boolean orientation = VERTICAL;
 			while (true) {
-				if(current.equals(p)) return true;
+				if(current.p.equals(p)) return true;
 				if(orientation == VERTICAL){
 					double compare = p.x() - current.p.x();
-					if(compare >= 0){
+					if(compare > 0){
 						if(current.rt == null){
 							return false;
 						}else {
@@ -121,7 +122,7 @@ public class KdTree {
 					}
 				}else {
 					double compare = p.y() - current.p.y();
-					if(compare >= 0){
+					if(compare > 0){
 						if(current.rt == null){
 							return false;
 						}else {
@@ -142,14 +143,11 @@ public class KdTree {
 	}
 
 	public void draw() { // draw all points to standard draw
-		if(root == null){
-			return ;
-		}else {
-			draw(root, VERTICAL);
-		}
+		draw(root, VERTICAL);
 	}
 	
-	public void draw(Node n, boolean orientation) {
+	private void draw(Node n, boolean orientation) {
+		if(n == null) return;
 		if(orientation == VERTICAL){
 			StdDraw.setPenColor(StdDraw.RED);
             StdDraw.line(n.p.x(), n.rect.ymin(), n.p.x(), n.rect.ymax());
@@ -188,20 +186,56 @@ public class KdTree {
 	}
 
 	public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
-		
+		Node minNode = root;
+		nearest(p, root, minNode);
+		return minNode.p;
+	}
+
+	private void nearest(Point2D p, Node n, Node minNode) {
+		if(n == null) return;
+		double minDistance = p.distanceTo(minNode.p);
+		if(!n.rect.contains(p) && n.rect.distanceTo(p) >= minDistance){
+			return;
+		}
+		if(p.distanceTo(n.p) < minDistance) {
+			minDistance = p.distanceTo(n.p);
+			minNode.p = n.p;
+		}
+		nearest(p,n.lb,minNode);
+		nearest(p,n.rt,minNode);
 	}
 
 	public static void main(String[] args) { // unit testing of the methods (optional)
+		KdTree kdtree = new KdTree();
+		kdtree.insert(new Point2D(0.7, 0.2));
+		kdtree.insert(new Point2D(0.5, 0.4));
+		kdtree.insert(new Point2D(0.2, 0.3));
+		kdtree.insert(new Point2D(0.4, 0.7));
+		kdtree.insert(new Point2D(0.9, 0.6));
+		
+		  StdDraw.clear();
+		  StdDraw.setPenRadius(0.03);
+	      StdDraw.setPenColor(StdDraw.BLACK);
+	      kdtree.draw();
+          
+		Point2D check = new Point2D(0.84, 0.079);
+		System.out.println(kdtree.nearest(check));
+		
 	}
 	
 	private static class Node {
 		private Point2D p; // the point 
 		private RectHV rect; // the axis-aligned rectangle corresponding to this node
-		private Node lb; // the left/bottom subtree
+		private Node lb; // the left/bottom subtreewd
 		private Node rt; // the right/top subtree
 		public Node(Point2D p, RectHV rect) {
 			this.p = p;
 			this.rect = rect;
 		}
+		@Override
+		public String toString() {
+			return "Node [p=" + p + "]";
+		}
+		
 	}
 }

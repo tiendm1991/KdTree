@@ -37,26 +37,28 @@ public class NearestNeighborVisualizer {
         while (true) {
 
             // the location (x, y) of the mouse
-            double x = StdDraw.mouseX();
-            double y = StdDraw.mouseY();
+            double x = 0.386;
+            double y = 0.445;
+//            double x = StdDraw.mouseX();
+//            double y = StdDraw.mouseY();
             Point2D query = new Point2D(x, y);
-
+            System.out.println(x + " -- " + y);
+            
             // draw all of the points
             StdDraw.clear();
             StdDraw.setPenColor(StdDraw.BLACK);
             StdDraw.setPenRadius(0.01);
-//            brute.draw();
-            kdtree.draw();
+            brute.draw();
 
             // draw in red the nearest neighbor (using brute-force algorithm)
             StdDraw.setPenRadius(0.03);
-            StdDraw.setPenColor(StdDraw.ORANGE);
+            StdDraw.setPenColor(StdDraw.RED);
             brute.nearest(query).draw();
             StdDraw.setPenRadius(0.02);
 
             // draw in blue the nearest neighbor (using kd-tree algorithm)
-            StdDraw.setPenColor(StdDraw.BLUE);
-//            kdtree.nearest(query).draw();
+            StdDraw.setPenColor(StdDraw.GREEN);
+            kdtree.nearest(query).draw();
             StdDraw.show();
             StdDraw.pause(40);
         }
