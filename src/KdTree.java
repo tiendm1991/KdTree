@@ -39,7 +39,7 @@ public class KdTree {
 				if(p.equals(current.p)) return;
 				if(orientation == VERTICAL){
 					double compare = p.x() - current.p.x();
-					if(compare > 0){
+					if(compare >= 0){
 						if(current.rt == null){
 							Node add = new Node(p, new RectHV(current.p.x(), current.rect.ymin(), 
 																current.rect.xmax(), current.rect.ymax()));
@@ -64,7 +64,7 @@ public class KdTree {
 					}
 				}else {
 					double compare = p.y() - current.p.y();
-					if(compare > 0){
+					if(compare >= 0){
 						if(current.rt == null){
 							Node add = new Node(p, new RectHV(current.rect.xmin(), current.p.y(), 
 																current.rect.xmax(), current.rect.ymax()));
@@ -105,7 +105,7 @@ public class KdTree {
 				if(current.p.equals(p)) return true;
 				if(orientation == VERTICAL){
 					double compare = p.x() - current.p.x();
-					if(compare > 0){
+					if(compare >= 0){
 						if(current.rt == null){
 							return false;
 						}else {
@@ -122,7 +122,7 @@ public class KdTree {
 					}
 				}else {
 					double compare = p.y() - current.p.y();
-					if(compare > 0){
+					if(compare >= 0){
 						if(current.rt == null){
 							return false;
 						}else {
@@ -177,10 +177,10 @@ public class KdTree {
 
 	private void range(Node n, RectHV rect, Set<Point2D> setPoint) {
 		if(n == null) return;
-		if(rect.contains(n.p)) setPoint.add(n.p);
 		if(!n.rect.intersects(rect)){
 			return;
 		}
+		if(rect.contains(n.p)) setPoint.add(n.p);
 		range(n.lb, rect, setPoint);
 		range(n.rt, rect, setPoint);
 	}
@@ -188,13 +188,13 @@ public class KdTree {
 	public Point2D nearest(Point2D p) { // a nearest neighbor in the set to point p; null if the set is empty
 		Node minNode = root;
 		nearest(p, root, minNode);
-		return minNode.p;
+		return minNode == null ? null : minNode.p;
 	}
 
 	private void nearest(Point2D p, Node n, Node minNode) {
 		if(n == null) return;
 		double minDistance = p.distanceTo(minNode.p);
-		if(!n.rect.contains(p) && n.rect.distanceTo(p) >= minDistance){
+		if(!n.rect.contains(p) && n.rect.distanceTo(p) > minDistance){
 			return;
 		}
 		if(p.distanceTo(n.p) < minDistance) {
@@ -207,18 +207,18 @@ public class KdTree {
 
 	public static void main(String[] args) { // unit testing of the methods (optional)
 		KdTree kdtree = new KdTree();
-		kdtree.insert(new Point2D(0.7, 0.2));
-		kdtree.insert(new Point2D(0.5, 0.4));
-		kdtree.insert(new Point2D(0.2, 0.3));
-		kdtree.insert(new Point2D(0.4, 0.7));
-		kdtree.insert(new Point2D(0.9, 0.6));
+		kdtree.insert(new Point2D(0.7, 0.2));//A
+		kdtree.insert(new Point2D(0.5, 0.4));//B
+		kdtree.insert(new Point2D(0.2, 0.3));//C
+		kdtree.insert(new Point2D(0.4, 0.7));//D
+		kdtree.insert(new Point2D(0.9, 0.6));//E
 		
 		  StdDraw.clear();
 		  StdDraw.setPenRadius(0.03);
 	      StdDraw.setPenColor(StdDraw.BLACK);
 	      kdtree.draw();
           
-		Point2D check = new Point2D(0.84, 0.079);
+		Point2D check = new Point2D(0.515, 0.169);
 		System.out.println(kdtree.nearest(check));
 		
 	}
