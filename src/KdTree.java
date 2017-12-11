@@ -193,12 +193,12 @@ public class KdTree {
 
 	private void nearest(Point2D p, Node n, Node minNode) {
 		if(n == null) return;
-		double minDistance = p.distanceTo(minNode.p);
-		if(!n.rect.contains(p) && n.rect.distanceTo(p) > minDistance){
+		double minDistance = p.distanceSquaredTo(minNode.p);
+		if(!n.rect.contains(p) && n.rect.distanceSquaredTo(p) > minDistance){
 			return;
 		}
-		if(p.distanceTo(n.p) < minDistance) {
-			minDistance = p.distanceTo(n.p);
+		if(p.distanceSquaredTo(n.p) < minDistance) {
+			minDistance = p.distanceSquaredTo(n.p);
 			minNode.p = n.p;
 		}
 		nearest(p,n.lb,minNode);
@@ -220,7 +220,8 @@ public class KdTree {
           
 		Point2D check = new Point2D(0.515, 0.169);
 		System.out.println(kdtree.nearest(check));
-		
+		Point2D n = new Point2D(1.3, 0.4);
+		System.out.println(RECTHV_MAX.distanceTo(n));
 	}
 	
 	private static class Node {
