@@ -37,10 +37,10 @@ public class NearestNeighborVisualizer {
         while (true) {
 
             // the location (x, y) of the mouse
-            double x = 0.16;
-            double y = 0.13;
-//            double x = StdDraw.mouseX();
-//            double y = StdDraw.mouseY();
+//            double x = 0.16;
+//            double y = 0.13;
+            double x = StdDraw.mouseX();
+            double y = StdDraw.mouseY();
             Point2D query = new Point2D(x, y);
             System.out.println(x + " -- " + y);
             
