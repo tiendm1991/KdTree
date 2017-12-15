@@ -205,7 +205,7 @@ public class KdTree {
 	}
 
 	private void nearest(Point2D p, Node n, Node minNode) {
-//		System.out.println(n);
+		System.out.println(n);
 		if (n == null || n.p == null)
 			return;
 		double minDistance = p.distanceSquaredTo(minNode.p);
@@ -268,7 +268,7 @@ public class KdTree {
 		StdDraw.setPenColor(StdDraw.BLACK);
 		kdtree.draw();
 
-		Point2D check = new Point2D(0.85, 0.23);
+		Point2D check = new Point2D(0.18, 0.47);
 		StdDraw.setPenRadius(0.03);
 		StdDraw.setPenColor(StdDraw.ORANGE);
 		check.draw();
